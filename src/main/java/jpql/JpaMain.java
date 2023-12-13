@@ -202,23 +202,23 @@ public class JpaMain {
 
 
             // 조건식(CASE)
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
-
-            Member member = new Member();
-//            member.setUsername("teamA");
-//            member.setUsername(null);
-            member.setUsername("관리자");
-            member.setAge(10);
-            member.setType(MemberType.ADMIN);
-
-            member.setTeam(team);
-
-            em.persist(member);
-
-            em.flush();
-            em.clear();
+//            Team team = new Team();
+//            team.setName("teamA");
+//            em.persist(team);
+//
+//            Member member = new Member();
+////            member.setUsername("teamA");
+////            member.setUsername(null);
+//            member.setUsername("관리자");
+//            member.setAge(10);
+//            member.setType(MemberType.ADMIN);
+//
+//            member.setTeam(team);
+//
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
 
             // 기본 CASE식
 //            String query =
@@ -238,10 +238,50 @@ public class JpaMain {
 //                System.out.println("s = " + s);
 //            }
             // 조건 CASE식 - NULLIF - 값이 일치하면 null을 반환
-            String query = "select nullif(m.username, '관리자') as username " +
-                    "from Member m ";
+//            String query = "select nullif(m.username, '관리자') as username " +
+//                    "from Member m ";
+//            List<String> result = em.createQuery(query, String.class)
+//                    .getResultList();
+//
+//            for (String s : result) {
+//                System.out.println("s = " + s);
+//            }
+
+            // JPQL 함수
+            Team teamA = new Team();
+            teamA.setName("teamA");
+            em.persist(teamA);
+
+            Team teamB = new Team();
+            teamB.setName("teamB");
+            em.persist(teamB);
+
+            Member member1 = new Member();
+            member1.setUsername("관리자1");
+            member1.setAge(10);
+            member1.setType(MemberType.ADMIN);
+            member1.setTeam(teamA);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("관리자2");
+            member2.setAge(10);
+            member2.setType(MemberType.ADMIN);
+            member2.setTeam(teamB);
+            em.persist(member2);
+
+            em.flush();
+            em.clear();
+
+//            String query = "select concat('a', 'b') from Member m";
+//            String query = "select 'a' || 'b' from Member m";
+//            String query = "select substring(m.username, 2, 3) from Member m";
+//            String query = "select locate('de', 'abcdefg') from Member m";
+//            String query = "select size(t.members) from Team t";
+//            String query = "select index(t.members) from Team t";
+            String query = "select function('group_concat', m.username) from Member m";
             List<String> result = em.createQuery(query, String.class)
-                    .getResultList();
+                            .getResultList();
 
             for (String s : result) {
                 System.out.println("s = " + s);
