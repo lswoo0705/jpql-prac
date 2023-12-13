@@ -49,13 +49,13 @@ public class JpaMain {
 
 
             // 프로젝션(SELECT)
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setAge(10);
-            em.persist(member);
-
-            em.flush();
-            em.clear();
+//            Member member = new Member();
+//            member.setUsername("member1");
+//            member.setAge(10);
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
 
 //            List<Member> result = em.createQuery("select m from Member m", Member.class)
 //                    .getResultList();
@@ -87,15 +87,37 @@ public class JpaMain {
 //            System.out.println("name = " + result[0]);
 //            System.out.println("age = " + result[1]);
 
-            List<MemberDTO> result = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+//            List<MemberDTO> result = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+//                    .getResultList();
+//
+//            MemberDTO memberDTO = result.get(0);
+//            System.out.println("memberDTO.username = " + memberDTO.getUsername());
+//            System.out.println("memberDTO.age = " + memberDTO.getAge());
+
+
+            // 페이징
+
+            for (int i = 0; i < 100; i++) {
+                Member member = new Member();
+                member.setUsername("member1" + i);
+                member.setAge(i);
+                em.persist(member);
+            }
+
+            em.flush();
+            em.clear();
+
+            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                    .setFirstResult(0)
+                    .setMaxResults(10)
                     .getResultList();
 
-            MemberDTO memberDTO = result.get(0);
-            System.out.println("memberDTO.username = " + memberDTO.getUsername());
-            System.out.println("memberDTO.age = " + memberDTO.getAge());
+            System.out.println("result.size = " + result.size());
+            for (Member member1 : result) {
+                System.out.println("member1 = " + member1);
+            }
 
-
-            tx.commit(); // 변경 내용을 db에 반영(플러시) -> 이 때 쿼리가 날아감
+                    tx.commit(); // 변경 내용을 db에 반영(플러시) -> 이 때 쿼리가 날아감
         } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
