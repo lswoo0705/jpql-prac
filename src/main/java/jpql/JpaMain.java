@@ -375,6 +375,41 @@ public class JpaMain {
 //            }
 
             // Entity를 직접 사용
+//            Team teamA = new Team();
+//            teamA.setName("팀A");
+//            em.persist(teamA);
+//
+//            Team teamB = new Team();
+//            teamB.setName("팀B");
+//            em.persist(teamB);
+//
+//            Member member1 = new Member();
+//            member1.setUsername("회원1");
+//            member1.setTeam(teamA);
+//            em.persist(member1);
+//
+//            Member member2 = new Member();
+//            member2.setUsername("회원2");
+//            member2.setTeam(teamA);
+//            em.persist(member2);
+//
+//            Member member3 = new Member();
+//            member3.setUsername("회원3");
+//            member3.setTeam(teamB);
+//            em.persist(member3);
+//
+//            em.flush();
+//            em.clear();
+//
+//            String query = "select m from Member m where m = :member";
+//
+//            Member findMember = em.createQuery(query, Member.class)
+//                    .setParameter("member", member1)
+//                    .getSingleResult();
+//
+//            System.out.println("findMember = " + findMember);
+
+            // 벌크 연산
             Team teamA = new Team();
             teamA.setName("팀A");
             em.persist(teamA);
@@ -385,29 +420,36 @@ public class JpaMain {
 
             Member member1 = new Member();
             member1.setUsername("회원1");
+            member1.setAge(0);
             member1.setTeam(teamA);
             em.persist(member1);
 
             Member member2 = new Member();
             member2.setUsername("회원2");
+            member2.setAge(0);
             member2.setTeam(teamA);
             em.persist(member2);
 
             Member member3 = new Member();
             member3.setUsername("회원3");
+            member3.setAge(0);
             member3.setTeam(teamB);
             em.persist(member3);
 
-            em.flush();
-            em.clear();
+            // flush 자동 호출
+            int resultCount = em.createQuery("update Member m set m.age = 20")
+                    .executeUpdate();
 
-            String query = "select m from Member m where m = :member";
+//            System.out.println("resultCount = " + resultCount);
 
-            Member findMember = em.createQuery(query, Member.class)
-                    .setParameter("member", member1)
-                    .getSingleResult();
+            // 쿼리문으로 자동 flush가 돼서 DB에는 20살이 적용됐지만, 영속성 컨텍스트에는 clear가 되지않아 0살
+//            System.out.println("member1.getAge = " + member1.getAge());
+//            System.out.println("member2.getAge = " + member2.getAge());
+//            System.out.println("member3.getAge = " + member3.getAge());
 
-            System.out.println("findMember = " + findMember);
+            em.clear(); // 벌크 연산 후에 컨텍스트를 초기화
+            Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("findMember = " + findMember.getAge());
 
             tx.commit(); // 변경 내용을 db에 반영(플러시) -> 이 때 쿼리가 날아감
         } catch (Exception e) {
