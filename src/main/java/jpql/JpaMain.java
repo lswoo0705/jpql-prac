@@ -248,6 +248,47 @@ public class JpaMain {
 //            }
 
             // JPQL 함수
+//            Team teamA = new Team();
+//            teamA.setName("teamA");
+//            em.persist(teamA);
+//
+//            Team teamB = new Team();
+//            teamB.setName("teamB");
+//            em.persist(teamB);
+//
+//            Member member1 = new Member();
+//            member1.setUsername("관리자1");
+//            member1.setAge(10);
+//            member1.setType(MemberType.ADMIN);
+//            member1.setTeam(teamA);
+//            em.persist(member1);
+//
+//            Member member2 = new Member();
+//            member2.setUsername("관리자2");
+//            member2.setAge(10);
+//            member2.setType(MemberType.ADMIN);
+//            member2.setTeam(teamB);
+//            em.persist(member2);
+//
+//            em.flush();
+//            em.clear();
+//
+////            String query = "select concat('a', 'b') from Member m";
+////            String query = "select 'a' || 'b' from Member m";
+////            String query = "select substring(m.username, 2, 3) from Member m";
+////            String query = "select locate('de', 'abcdefg') from Member m";
+////            String query = "select size(t.members) from Team t";
+////            String query = "select index(t.members) from Team t";
+//            String query = "select function('group_concat', m.username) from Member m";
+//            List<String> result = em.createQuery(query, String.class)
+//                            .getResultList();
+//
+//            for (String s : result) {
+//                System.out.println("s = " + s);
+//
+
+            // ===========================================================================
+            // 경로 표현식
             Team teamA = new Team();
             teamA.setName("teamA");
             em.persist(teamA);
@@ -273,17 +314,11 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-//            String query = "select concat('a', 'b') from Member m";
-//            String query = "select 'a' || 'b' from Member m";
-//            String query = "select substring(m.username, 2, 3) from Member m";
-//            String query = "select locate('de', 'abcdefg') from Member m";
-//            String query = "select size(t.members) from Team t";
-//            String query = "select index(t.members) from Team t";
-            String query = "select function('group_concat', m.username) from Member m";
-            List<String> result = em.createQuery(query, String.class)
-                            .getResultList();
+            String query = "select t.members from Team t";
+            List<Member> result = em.createQuery(query, Member.class)
+                    .getResultList();
 
-            for (String s : result) {
+            for (Member s : result) {
                 System.out.println("s = " + s);
             }
 
